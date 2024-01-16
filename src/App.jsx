@@ -10,13 +10,13 @@ Modal.setAppElement('#root');
 
 function App() {
   const [items, setItems] = useState([]);
-  const [editingItemId, setEditingItemId] = useState(null);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
 
-  // Add state for the description
+ 
   const [description, setDescription] = useState('');
 
   function addItem(e) {
@@ -32,25 +32,14 @@ function App() {
   }
 
   function deleteItem(id) {
-    setItems(items.filter(item => item.id !== id));
-    setEditingItemId(null);
-    setSelectedItems(selectedItems.filter(selectedId => selectedId !== id));
+    setSelectedItemId(id);
+    setIsDeleteModalOpen(true);
   }
 
-  function startEditing(id) {
-    setEditingItemId(id);
-  }
-
-  function finishEditing() {
-    setEditingItemId(null);
-  }
-
-  function handleEditChange(id, newText) {
-    setItems(items.map(item => (item.id === id ? { ...item, text: newText } : item)));
-  }
-
-  function handleDescriptionEdit(id, newDescription) {
-    setItems(items.map(item => (item.id === id ? { ...item, description: newDescription } : item)));
+  function confirmDelete() {
+    setItems(items.filter(item => item.id !== selectedItemId));
+    setSelectedItems(selectedItems.filter(selectedId => selectedId !== selectedItemId));
+    setIsDeleteModalOpen(false);
   }
 
   function toggleSelectItem(id) {
@@ -73,9 +62,21 @@ function App() {
     setIsModalOpen(false);
   }
 
+  function closeDeleteModal() {
+    setSelectedItemId(null);
+    setIsDeleteModalOpen(false);
+  }
+
   return (
     <div className="App">
-      <div className='topo'>f</div>
+      <div className='topo'>
+     
+                <button className='organizacao'>Organização</button>
+                <button className='tarefas'>Tarefas</button>
+           
+      
+      </div>
+      
       <div className='container'>
         <span className="titulo">Otimize seu tempo e se organize com o nosso Planejador Diário.</span>
         <div className="flex-container">
@@ -90,33 +91,16 @@ function App() {
                 <span onClick={() => openModal(item.id)} style={{ cursor: 'pointer' }}>
                   {item.text}
                 </span>
-                {editingItemId === item.id ? (
-                  <>
-                    <input
-                      type="text"
-                      value={item.text}
-                      onChange={(e) => handleEditChange(item.id, e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      value={item.description}
-                      onChange={(e) => handleDescriptionEdit(item.id, e.target.value)}
-                      placeholder="Editar descrição..."
-                    />
-                    <button onClick={finishEditing}>Atualizar</button>
-                  </>
-                ) : (
-                  <div>
-                    <input
-                      className='status'
-                      type="checkbox"
-                      checked={selectedItems.includes(item.id)}
-                      onChange={() => toggleSelectItem(item.id)}
-                    />
-                    <button className='botao' onClick={() => startEditing(item.id)}><RiPencilFill /></button>
-                    <button className='botao' onClick={() => deleteItem(item.id)}><ImBin2 /></button>
-                  </div>
-                )}
+                <div>
+                  <input
+                    className='status'
+                    type="checkbox"
+                    checked={selectedItems.includes(item.id)}
+                    onChange={() => toggleSelectItem(item.id)}
+                  />
+                  <button className='botao' onClick={() => openModal(item.id)}><RiPencilFill /></button>
+                  <button className='botao' onClick={() => deleteItem(item.id)}><ImBin2 /></button>
+                </div>
               </li>
             ))}
           </div>
@@ -131,6 +115,7 @@ function App() {
           </form>
         )}
 
+        
         <Modal
           isOpen={isModalOpen}
           onRequestClose={closeModal}
@@ -141,11 +126,35 @@ function App() {
           {selectedItemId && (
             <div>
               <button className="react-modal-close-button" onClick={closeModal}>&times;</button>
-              <h2>Detalhes do Item</h2>
+              <h2 className='detalhes'>Deseja editar esse item?</h2>
               <p>ID: {selectedItemId}</p>
-              <p><b>Tarefa:</b> {items.find(item => item.id === selectedItemId)?.text}</p>
-              <p><b>Descrição:</b> {items.find(item => item.id === selectedItemId)?.description}</p>
-              <button onClick={closeModal}>Fechar</button>
+              <p className='botoes'>{items.find(item => item.id === selectedItemId)?.description}</p>
+              <div className='botoes'>
+                <button className='nao' onClick={closeModal}>Não</button>
+                <button className='sim'>Sim</button>
+              </div>
+            </div>
+          )}
+        </Modal>
+
+       
+        <Modal
+          isOpen={isDeleteModalOpen}
+          onRequestClose={closeDeleteModal}
+          contentLabel="Confirmar Exclusão"
+          className="react-modal"
+          overlayClassName="react-modal-overlay"
+        >
+          {selectedItemId && (
+            <div>
+              <button className="react-modal-close-button" onClick={closeDeleteModal}>&times;</button>
+              <h2 className='detalhes'>Deseja excluir este item?</h2>
+              <p>ID: {selectedItemId}</p>
+              <p className='botoes'>{items.find(item => item.id === selectedItemId)?.description}</p>
+              <div className='botoes'>
+                <button className='nao' onClick={closeDeleteModal}>Não</button>
+                <button className='sim' onClick={confirmDelete}>Sim</button>
+              </div>
             </div>
           )}
         </Modal>
