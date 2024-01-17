@@ -3,8 +3,8 @@
 .App {
  font-family: Arial, sans-serif;
  width: 100%;
- margin: 0 auto;
- margin: 0 auto;
+
+ 
 }
 
 form {
@@ -64,9 +64,11 @@ li button {
   float: left;
 }
 .titulo{
-  font-size: 18px;
+  font-size: 25px;
   font-weight: 600;
   text-align: center;
+  margin-left: -120px;
+  width: 800px;
 
 }
 .adicionar{
@@ -100,8 +102,10 @@ font-family: 'Cookie', cursive;
   }
   .topo{
     background-color: #0C70F2;
-    width: 100%;
+    width: 101%;
     height: 54px;
+    margin-top: -10px;
+    margin-left: -10px;
   }
   .container{
     width: 600px;

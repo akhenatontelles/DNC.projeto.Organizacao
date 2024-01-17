@@ -78,7 +78,7 @@ function App() {
       </div>
       
       <div className='container'>
-        <span className="titulo">Otimize seu tempo e se organize com o nosso Planejador Diário.</span>
+        <div  className="titulo"><span>Otimize seu tempo e se organize com o nosso Planejador Diário.</span></div>
         <div className="flex-container">
           <div className="grid-item">Tarefa</div>
           <div className="grid-item">Status</div>
